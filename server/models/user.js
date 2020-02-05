@@ -28,13 +28,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       freezeTableName: true,
-    },
+    }
   );
-  User.associate = function (models) {
+  User.associate = function(models) {
     // associations can be defined here
-    // User.hasMany(models.Post, {
-    //   foreignKey: 'user_id',
-    // });
+    User.hasMany(models.Post, {
+      foreignKey: 'user_id',
+    });
   };
   return User;
 };

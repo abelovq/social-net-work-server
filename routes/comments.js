@@ -6,53 +6,53 @@ require('../server/config/passport')(passport);
 
 const router = express.Router();
 
-const controller = require('../controllers/posts');
+const controller = require('../controllers/comments');
 
 module.exports = passport => {
   router.post(
-    '/posts',
+    '/comments',
     [
-      check('title')
+      check('message')
         .not()
         .isEmpty()
         .trim(),
-      check('description')
+      check('commentable_type')
         .not()
         .isEmpty()
-        .trim(),
+        .isIn(['Post', 'Comment']),
+      check('commentable_id')
+        .not()
+        .isEmpty()
+        .isInt(),
+      // .exists({ checkNull: true }),
     ],
     passport.authenticate('jwt', { session: false }),
-    controller.createPost
+    controller.createComment
   );
   router.get(
-    '/posts/:id',
+    '/comments',
     passport.authenticate('jwt', { session: false }),
-    controller.getPostById
+    controller.getComments
   );
   router.get(
-    '/posts',
+    '/comments/:id',
     passport.authenticate('jwt', { session: false }),
-    controller.getPosts
+    controller.getCommentById
   );
   router.put(
-    '/posts/:id',
+    '/comments/:id',
     [
-      check('title')
+      check('message')
         .not()
-        .isEmpty()
-        .trim(),
-      check('description')
-        .not()
-        .isEmpty()
-        .trim(),
+        .isEmpty(),
     ],
     passport.authenticate('jwt', { session: false }),
-    controller.changePost
+    controller.changeCommentById
   );
-  router.delete(
-    '/posts/:id',
+  router.get(
+    '/posts/:id/comments',
     passport.authenticate('jwt', { session: false }),
-    controller.deletePost
+    controller.getCommentsForPost
   );
 
   return router;

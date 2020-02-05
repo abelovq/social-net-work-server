@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator');
 
 function setToken(data) {
   console.log('TOKEN data', data);
@@ -10,16 +11,25 @@ function setToken(data) {
   return token;
 }
 
-function getToken(headers) {
-  if (headers && headers.authorization) {
-    const token = headers.authorization.split(' ');
-    if (token.length === 2) {
-      console.log('parted TOKEN', token[1]);
-      return token[1];
-    }
-    return null;
+// function getToken(headers) {
+//   if (headers && headers.authorization) {
+//     const token = headers.authorization.split(' ');
+//     if (token.length === 2) {
+//       console.log('parted TOKEN', token[1]);
+//       return token[1];
+//     }
+//     return null;
+//   }
+//   return null;
+// }
+
+function handleValidation(request, response) {
+  const errors = validationResult(request);
+  if (!errors.isEmpty()) {
+    response.status(422).send({ errors: errors.array() });
+    return false;
   }
-  return null;
+  return true;
 }
 
-module.exports = { setToken, getToken };
+module.exports = { setToken, handleValidation };

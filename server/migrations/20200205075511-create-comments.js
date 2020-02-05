@@ -1,6 +1,6 @@
 module.exports = {
-  up: (queryInterface, Sequelize) =>
-    queryInterface.createTable('Post', {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('Comment', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,11 +10,14 @@ module.exports = {
       user_id: {
         type: Sequelize.INTEGER,
       },
-      title: {
+      message: {
+        type: Sequelize.TEXT,
+      },
+      commentable_type: {
         type: Sequelize.STRING,
       },
-      description: {
-        type: Sequelize.TEXT,
+      commentable_id: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
@@ -24,6 +27,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-    }),
-  down: (queryInterface, Sequelize) => queryInterface.dropTable('Post'),
+    });
+  },
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('Comment');
+  },
 };
