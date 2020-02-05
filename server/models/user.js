@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const Users = sequelize.define(
-    'Users',
+  const User = sequelize.define(
+    'User',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -26,10 +26,15 @@ module.exports = (sequelize, DataTypes) => {
       // created_at: DataTypes.DATE,
       // updated_at: DataTypes.DATE,
     },
-    {},
+    {
+      freezeTableName: true,
+    },
   );
-  Users.associate = function(models) {
+  User.associate = function (models) {
     // associations can be defined here
+    // User.hasMany(models.Post, {
+    //   foreignKey: 'user_id',
+    // });
   };
-  return Users;
+  return User;
 };

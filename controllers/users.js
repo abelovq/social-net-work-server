@@ -1,12 +1,3 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const bcrypt = require('bcrypt');
-
-const router = express.Router();
-
-const { Users } = require('../server/models');
-
 const { getToken } = require('../utils');
 
 const getProfile = async (req, res) => {

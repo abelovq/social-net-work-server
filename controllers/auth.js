@@ -1,11 +1,6 @@
-const express = require('express');
-
-const passport = require('passport');
 const bcrypt = require('bcrypt');
 
-const router = express.Router();
-
-const { Users } = require('../server/models');
+const { User } = require('../server/models');
 
 const { setToken } = require('../utils');
 
@@ -18,7 +13,7 @@ const signUp = async (req, res) => {
       lastName,
       confirmPassword,
     } = req.body;
-    const candidate = await Users.findOne({
+    const candidate = await User.findOne({
       where: {
         email,
       },
@@ -36,7 +31,7 @@ const signUp = async (req, res) => {
     } else {
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
-      const newUser = await Users.create({
+      const newUser = await User.create({
         email,
         firstName,
         lastName,
@@ -59,7 +54,7 @@ const signUp = async (req, res) => {
 const signIn = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await Users.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       console.log('usera net');
       res.status(401).send({
@@ -67,7 +62,6 @@ const signIn = async (req, res) => {
         message: 'Authentication failed. User not found.',
       });
     } else {
-      console.log(22222);
       const matchPassword = await bcrypt.compare(
         password,
         user.password,
@@ -79,10 +73,7 @@ const signIn = async (req, res) => {
         });
       } else {
         const { id } = user;
-        res.setHeader(
-          'Authorization',
-          `Bearer ${setToken({ id, ...req.body })}`,
-        );
+        res.setHeader('Authorization', `Bearer ${setToken({ id })}`);
         res
           .status(201)
           .send({ success: true, message: 'User log in' });

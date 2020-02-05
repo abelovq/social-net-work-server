@@ -6,7 +6,7 @@ const router = express.Router();
 
 const controller = require('../controllers/users');
 
-module.exports = passport => {
+module.exports = (passport) => {
   router.get(
     '/me',
     passport.authenticate('jwt', { session: false }),

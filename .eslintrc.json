@@ -4,15 +4,13 @@
     "es6": true,
     "node": true
   },
-  "extends": ["prettier", "airbnb-base"],
-  "plugins": ["prettier"],
+  "extends": ["airbnb-base"],
 
   "parserOptions": {
     "ecmaVersion": 2018
   },
   "rules": {
     "no-console": "off",
-    "prettier/prettier": "error",
     "implicit-arrow-linebreak": ["error", "beside"]
   }
 }
