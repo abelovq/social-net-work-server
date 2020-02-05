@@ -84,10 +84,23 @@ const getCommentsForPost = async (req, res) => {
   }
 };
 
+const test = async (req, res) => {
+  try {
+    const insatnce = new Comment({ commentable_type: 'Post' });
+    console.log('insatnce', insatnce.getCommentable('asd'))
+  } catch (err) {
+    console.log('err', err);
+    res.status(400).send({ error: true, message: 'Something goes wrong...' });
+  }
+}
+
+
+
 module.exports = {
   createComment,
   getComments,
   getCommentById,
   changeCommentById,
   getCommentsForPost,
+  test
 };
