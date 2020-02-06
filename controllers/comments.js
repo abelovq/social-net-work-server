@@ -84,6 +84,21 @@ const getCommentsForPost = async (req, res) => {
   }
 };
 
+const getCommentsForComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const commentsForComment = await Comment.findAll({
+      where: {
+        [Op.and]: [{ commentable_id: id }, { commentable_type: 'Comment' }],
+      }
+    });
+    res.status(200).send({ sucess: true, commentsForComment });
+  } catch (err) {
+    console.log('err', err);
+    res.status(400).send({ error: true, message: 'Something goes wrong...' });
+  }
+}
+
 const test = async (req, res) => {
   try {
     const insatnce = new Comment({ commentable_type: 'Post' });
@@ -102,5 +117,6 @@ module.exports = {
   getCommentById,
   changeCommentById,
   getCommentsForPost,
+  getCommentsForComment,
   test
 };

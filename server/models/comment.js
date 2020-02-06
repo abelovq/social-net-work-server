@@ -20,10 +20,12 @@ module.exports = (sequelize, DataTypes) => {
     });
     Comment.belongsTo(models.Comment, {
       foreignKey: 'commentable_id',
+      targetKey: 'commentable_id',
       constraints: false
     });
     Comment.hasMany(models.Comment, {
       foreignKey: 'commentable_id',
+      sourceKey: 'commentable_id',
       constraints: false,
       scope: {
         commentable_type: 'Comment'

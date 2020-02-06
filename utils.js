@@ -2,12 +2,10 @@ const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 
 function setToken(data) {
-  console.log('TOKEN data', data);
   const payload = { id: data.id };
   const token = jwt.sign(payload, 'secret', {
     expiresIn: 86400 * 30,
   });
-  console.log('token', token);
   return token;
 }
 

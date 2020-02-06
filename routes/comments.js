@@ -56,6 +56,10 @@ module.exports = passport => {
   );
   router.post('/comments/test', passport.authenticate('jwt', { session: false }),
     controller.test)
-
+  router.get(
+    '/comments/:id/comments',
+    passport.authenticate('jwt', { session: false }),
+    controller.getCommentsForComment
+  );
   return router;
 };
