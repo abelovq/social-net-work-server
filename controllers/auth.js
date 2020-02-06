@@ -25,7 +25,7 @@ const signUp = async (req, res) => {
           message: 'Email is already registered',
         });
       } else if (confirmPassword !== password) {
-        res.status(422).send({
+        res.status(401).send({
           success: false,
           message: 'Wrong confirm password', // ask status code
         });
@@ -65,14 +65,14 @@ const signIn = async (req, res) => {
       } else {
         const matchPassword = await bcrypt.compare(password, user.password);
         if (!matchPassword) {
-          res.status(200).send({
+          res.status(401).send({
             success: false,
             message: 'Authentication failed. Wrong password.',
           });
         } else {
           const { id } = user;
           res.setHeader('Authorization', `Bearer ${setToken({ id })}`);
-          res.status(201).send({ success: true, message: 'User log in' });
+          res.status(200).send({ success: true, message: 'User log in' });
         }
       }
     } catch (err) {

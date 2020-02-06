@@ -19,6 +19,9 @@ module.exports = {
       commentable_id: {
         type: Sequelize.INTEGER,
       },
+      postId: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

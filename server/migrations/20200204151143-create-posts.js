@@ -1,6 +1,8 @@
+const constraintName = 'post_post_service_id_fkey';
+
 module.exports = {
-  up: (queryInterface, Sequelize) =>
-    queryInterface.createTable('Post', {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('Post', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -24,6 +26,19 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-    }),
-  down: (queryInterface, Sequelize) => queryInterface.dropTable('Post'),
+    });
+    // .then(() =>
+    //   queryInterface.sequelize
+    //     .query(`alter table "Post" drop constraint "${constraintName}"`)
+    // .then(() =>
+    //   queryInterface.sequelize.query(
+    //     `alter table "Post"
+    //   add constraint "${constraintName}" foreign key("commentable_id") references "Сomment" ("id")
+    //   on delete cascade`
+    //   )
+    // )
+  },
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('Post');
+  },
 };

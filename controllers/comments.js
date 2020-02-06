@@ -7,13 +7,14 @@ const { handleValidation } = require('../utils');
 const createComment = async (req, res) => {
   if (handleValidation(req, res)) {
     try {
+      const { id } = req.params;
       const { commentable_type, commentable_id, message } = req.body;
-      console.log('commentable_id', commentable_id);
       const comment = await Comment.create({
         commentable_type,
         commentable_id,
         message,
         user_id: req.user.id,
+        postId: id,
       });
       res.status(201).send({ comment });
     } catch (err) {
@@ -90,26 +91,24 @@ const getCommentsForComment = async (req, res) => {
     const commentsForComment = await Comment.findAll({
       where: {
         [Op.and]: [{ commentable_id: id }, { commentable_type: 'Comment' }],
-      }
+      },
     });
     res.status(200).send({ sucess: true, commentsForComment });
   } catch (err) {
     console.log('err', err);
     res.status(400).send({ error: true, message: 'Something goes wrong...' });
   }
-}
+};
 
 const test = async (req, res) => {
   try {
     const insatnce = new Comment({ commentable_type: 'Post' });
-    console.log('insatnce', insatnce.getCommentable('asd'))
+    console.log('insatnce', insatnce.getCommentable('asd'));
   } catch (err) {
     console.log('err', err);
     res.status(400).send({ error: true, message: 'Something goes wrong...' });
   }
-}
-
-
+};
 
 module.exports = {
   createComment,
@@ -118,5 +117,5 @@ module.exports = {
   changeCommentById,
   getCommentsForPost,
   getCommentsForComment,
-  test
+  test,
 };

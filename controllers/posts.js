@@ -1,4 +1,4 @@
-const { Post } = require('../server/models');
+const { Post, Comment } = require('../server/models');
 
 const { getToken, handleValidation } = require('../utils');
 
@@ -38,8 +38,6 @@ const getPostById = async (req, res) => {
 };
 
 const getPosts = async (req, res) => {
-  const token = getToken(req.headers);
-  console.log('TOKEN GET POSTS', token);
   try {
     const posts = await Post.findAll();
     res.status(200).send({ sucess: true, posts });
@@ -56,7 +54,6 @@ const changePost = async (req, res) => {
       const { title, description } = req.body;
       const target = await Post.findOne({ where: { id } });
       const post = await target.update({ title, description });
-      console.log('post', post);
       if (!post) {
         return res
           .status(404)
@@ -74,12 +71,17 @@ const deletePost = async (req, res) => {
   if (handleValidation(req, res)) {
     try {
       const { id } = req.params;
-      const deleted = await Post.destroy({ where: { id } });
-      if (deleted === 1) {
+      const deletedPost = await Post.destroy({ where: { id } });
+      const deletedComments = await Comment.findAll({ where: { postId: id } });
+      for (const comment of deletedComments) {
+        comment.destroy();
+      }
+      if (deletedPost === 1) {
         return res
           .status(200)
           .send({ success: true, message: 'Successfully deleted' });
       }
+      res.send({ deleted });
       res.status(404).send({ success: false, message: 'Record not found' });
     } catch (err) {
       console.log('err', err);
@@ -87,6 +89,8 @@ const deletePost = async (req, res) => {
     }
   }
 };
+
+const findIdsToDelete = () => {};
 
 module.exports = {
   getPostById,

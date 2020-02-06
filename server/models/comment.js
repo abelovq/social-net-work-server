@@ -7,35 +7,42 @@ module.exports = (sequelize, DataTypes) => {
       message: DataTypes.TEXT,
       commentable_type: DataTypes.STRING,
       commentable_id: DataTypes.INTEGER,
+      postId: DataTypes.INTEGER,
     },
     {
       freezeTableName: true,
     }
   );
-  Comment.associate = function (models) {
+  Comment.associate = function(models) {
     // associations can be defined here
     Comment.belongsTo(models.Post, {
       foreignKey: 'commentable_id',
-      constraints: false
+
+      constraints: false,
     });
     Comment.belongsTo(models.Comment, {
       foreignKey: 'commentable_id',
       targetKey: 'commentable_id',
-      constraints: false
+
+      constraints: false,
     });
     Comment.hasMany(models.Comment, {
       foreignKey: 'commentable_id',
       sourceKey: 'commentable_id',
-      constraints: false,
+      // constraints: false,
       scope: {
-        commentable_type: 'Comment'
-      }
-    })
+        commentable_type: 'Comment',
+      },
+      onDelete: 'CASCADE',
+      hooks: true,
+    });
   };
-  Comment.prototype.getCommentable = function (options) {
-
+  Comment.prototype.getCommentable = function(options) {
     function transformString(str) {
-      const newString = str.split('_').map((el, i) => i === 1 ? `${el[0].toUpperCase()}${el.slice(1)}` : el).join('');
+      const newString = str
+        .split('_')
+        .map((el, i) => (i === 1 ? `${el[0].toUpperCase()}${el.slice(1)}` : el))
+        .join('');
       return newString;
     }
 
@@ -47,14 +54,18 @@ module.exports = (sequelize, DataTypes) => {
     return this[mixinMethodName](options);
   };
 
-  Comment.addHook("afterFind", findResult => {
+  Comment.addHook('afterFind', findResult => {
     if (!Array.isArray(findResult)) {
       findResult = [findResult];
     }
+    console.log('hook !!!!!!!');
     for (const instance of findResult) {
-      if (instance.commentable_type === "Post" && instance.Post !== undefined) {
+      if (instance.commentable_type === 'Post' && instance.Post !== undefined) {
         instance.commentable = instance.Post;
-      } else if (instance.commentable_type === "Comment" && instance.Comment !== undefined) {
+      } else if (
+        instance.commentable_type === 'Comment' &&
+        instance.Comment !== undefined
+      ) {
         instance.commentable = instance.Comment;
       }
       // To prevent mistakes:
@@ -67,7 +78,3 @@ module.exports = (sequelize, DataTypes) => {
 
   return Comment;
 };
-
-
-
-

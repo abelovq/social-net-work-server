@@ -10,7 +10,7 @@ const controller = require('../controllers/comments');
 
 module.exports = passport => {
   router.post(
-    '/comments',
+    '/comments/:id',
     [
       check('message')
         .not()
@@ -54,8 +54,11 @@ module.exports = passport => {
     passport.authenticate('jwt', { session: false }),
     controller.getCommentsForPost
   );
-  router.post('/comments/test', passport.authenticate('jwt', { session: false }),
-    controller.test)
+  router.post(
+    '/comments/test',
+    passport.authenticate('jwt', { session: false }),
+    controller.test
+  );
   router.get(
     '/comments/:id/comments',
     passport.authenticate('jwt', { session: false }),

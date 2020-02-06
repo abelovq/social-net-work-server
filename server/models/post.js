@@ -10,18 +10,19 @@ module.exports = (sequelize, DataTypes) => {
       freezeTableName: true,
     }
   );
-  Post.associate = function (models) {
+  Post.associate = function(models) {
     // associations can be defined here
     Post.belongsTo(models.User, {
       foreignKey: 'user_id',
     });
     Post.hasMany(models.Comment, {
       foreignKey: 'commentable_id',
-
-      constraint: false,
+      // constraint: false,
       scope: {
-        commentable_type: 'Post'
-      }
+        commentable_type: 'Post',
+      },
+      onDelete: 'CASCADE',
+      hooks: true,
     });
   };
   return Post;

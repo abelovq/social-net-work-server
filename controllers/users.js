@@ -2,8 +2,6 @@ const { getToken } = require('../utils');
 
 const getProfile = async (req, res) => {
   try {
-    const token = getToken(req.headers);
-    console.log('token PROFILE', token);
     const { firstName, lastName, email } = req.user;
     res.status(200).send({ firstName, lastName, email });
   } catch (err) {
