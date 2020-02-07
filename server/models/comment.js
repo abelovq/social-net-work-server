@@ -11,9 +11,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       freezeTableName: true,
+      // hierarchy: true,
     }
   );
-  Comment.associate = function(models) {
+  Comment.isHierarchy();
+  Comment.associate = function (models) {
     // associations can be defined here
     Comment.belongsTo(models.Post, {
       foreignKey: 'commentable_id',
@@ -23,13 +25,12 @@ module.exports = (sequelize, DataTypes) => {
     Comment.belongsTo(models.Comment, {
       foreignKey: 'commentable_id',
       targetKey: 'commentable_id',
-
       constraints: false,
     });
     Comment.hasMany(models.Comment, {
       foreignKey: 'commentable_id',
       sourceKey: 'commentable_id',
-      // constraints: false,
+      constraints: false,
       scope: {
         commentable_type: 'Comment',
       },
@@ -37,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       hooks: true,
     });
   };
-  Comment.prototype.getCommentable = function(options) {
+  Comment.prototype.getCommentable = function (options) {
     function transformString(str) {
       const newString = str
         .split('_')

@@ -15,6 +15,6 @@ module.exports = passport => {
     [check('email').isEmail(), check('password').isLength({ min: 6 })],
     controller.signIn
   );
-
+  router.get('/forgotpassword', controller.forgotPassword)
   return router;
 };

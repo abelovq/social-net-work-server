@@ -1,6 +1,6 @@
 const { Post, Comment } = require('../server/models');
 
-const { getToken, handleValidation } = require('../utils');
+const { handleValidation } = require('../utils');
 
 const createPost = async (req, res) => {
   if (handleValidation(req, res)) {
@@ -39,7 +39,7 @@ const getPostById = async (req, res) => {
 
 const getPosts = async (req, res) => {
   try {
-    const posts = await Post.findAll();
+    const posts = await Post.findAll({ include: [{ model: Comment, as: 'comments' }] });
     res.status(200).send({ sucess: true, posts });
   } catch (err) {
     console.log('err', err);
@@ -72,16 +72,22 @@ const deletePost = async (req, res) => {
     try {
       const { id } = req.params;
       const deletedPost = await Post.destroy({ where: { id } });
-      const deletedComments = await Comment.findAll({ where: { postId: id } });
+      const deletedComments = await Comment.findAll({ where: { postId: id }, hierarchy: true });
       for (const comment of deletedComments) {
-        comment.destroy();
+        // while()
+        // if (comment.commentable_type === 'Comment') {
+
+        // }
+        console.log('comment', comment);
+        // comment.destroy();
       }
+      // ask if i am delete post and re create it id shifts by posotin i.e. 
+      // id delete post with id 1 then create post id will be 2 and i'll have to create comments with id 2 not 1
       if (deletedPost === 1) {
         return res
-          .status(200)
+          .status(204)
           .send({ success: true, message: 'Successfully deleted' });
       }
-      res.send({ deleted });
       res.status(404).send({ success: false, message: 'Record not found' });
     } catch (err) {
       console.log('err', err);
@@ -89,8 +95,6 @@ const deletePost = async (req, res) => {
     }
   }
 };
-
-const findIdsToDelete = () => {};
 
 module.exports = {
   getPostById,

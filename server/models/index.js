@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
+require('sequelize-hierarchy')(Sequelize);
 
+// console.log('Sequelize', Sequelize)
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(`${__dirname}/../config/config.json`)[env];

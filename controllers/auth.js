@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const { User } = require('../server/models');
 
@@ -82,4 +83,37 @@ const signIn = async (req, res) => {
   }
 };
 
-module.exports = { signUp, signIn };
+const forgotPassword = (req, res) => {
+  try {
+    res.send('<form action="/passwordreset" method="POST">' +
+      '<input type="email" name="email" value="" placeholder="Enter your email address..." />' +
+      '<input type="submit" value="Reset Password" />' +
+      '</form>');
+  } catch (err) {
+    console.log('err', err);
+    res.status(400).send({ error: true, message: 'Something goes wrong...' });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.send(400).send({ message: 'Email required' })
+    }
+    const user = await User.findOne({ where: { email } });
+    const userId = user.id;
+    const payload = {
+      id: userId,
+      email,
+    };
+    const secretWord = 'secret';
+    const token = jwt.sign(payload, secretWord);
+
+  } catch (err) {
+    console.log('err', err);
+    res.status(400).send({ error: true, message: 'Something goes wrong...' });
+  }
+}
+
+module.exports = { signUp, signIn, forgotPassword };

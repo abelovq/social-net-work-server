@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 
-const { Comment } = require('../server/models');
+const { Comment, Post, User } = require('../server/models');
 
 const { handleValidation } = require('../utils');
 
@@ -26,7 +26,8 @@ const createComment = async (req, res) => {
 
 const getComments = async (req, res) => {
   try {
-    const comments = await Comment.findAll();
+    const comments = await Comment.findAll({ include: [{ model: Post, as: 'posts', nested: true }] });
+
     res.status(200).send({ success: true, comments });
   } catch (err) {
     console.log('err', err);
@@ -99,6 +100,29 @@ const getCommentsForComment = async (req, res) => {
     res.status(400).send({ error: true, message: 'Something goes wrong...' });
   }
 };
+
+const deleteComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedComment = await Comment.destroy({ where: { id } });
+    const deletedComments = await Comment.findAll({ where: { postId: id } });
+    for (const comment of deletedComments) {
+      comment.destroy();
+    }
+    // ask if i am delete post and re create it id shifts by posotin i.e. 
+    // id delete post with id 1 then create post id will be 2 and i'll have to create comments with id 2 not 1
+    if (deletedPost === 1) {
+      return res
+        .status(204)
+        .send({ success: true, message: 'Successfully deleted' });
+    }
+    res.status(404).send({ success: false, message: 'Record not found' });
+
+  } catch (err) {
+    console.log('err', err);
+    res.status(400).send({ error: true, message: 'Something goes wrong...' });
+  }
+}
 
 const test = async (req, res) => {
   try {
